@@ -1,0 +1,22 @@
+{
+  "name": "text-to-image",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidrajdgl/Text-to-Image.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidrajdgl/Text-to-Image/issues"
+  },
+  "homepage": "https://davidrajdgl.github.io/Text-to-Image",
+  "dependencies": {
+    "gh-pages": "^2.2.0"
+  }
+}
