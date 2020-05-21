@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css"
+        integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"
+        integrity="sha384-2BKqo+exmr9su6dir+qCw08N2ZKRucY4PrGQPPWU1A7FtlCGjmEGFqXCv5nyM5Ij"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.min.js"
+        integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI"
+        crossorigin="anonymous"></script>
+
+
+    <script> window.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "\\[", right: "\\]", display: true },
+                    { left: "\\begin{equation}", right: "\\end{equation}" },
+                    { left: "$", right: "$", display: false },
+                    { left: "\\(", right: "\\)", display: false }
+                ],
+            });
+        });
+    </script>
+
+    <title>Converting Text to Image</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="navbar-fixed">
+            <nav>
+                <div class="nav-wrapper  cyan darken-3">
+                    <a href="#!" class="brand-logo">$\TeX$analytics</a>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="./index.html">Basic</a></li>
+                        <li><a href="badges.html">$\LaTeX$</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="section">
+
+
+        <div class="row">
+            <h3 class="center pb2 cyan-text text-darken-4">Convert your text to Image file</h3>
+
+            <div class="col s12 m6">
+                <textarea id="editor" placeholder="Type/paste your text here...">                </textarea>
+            </div>
+
+            <div class="col s12 m6">
+                <div class="card horizontal">
+
+                    <div class="card-content">
+                        <h5>
+                            Settings
+                        </h5>
+                        <span class="green-text">For defaults, dont fill anything...</span>
+                        <form>
+                            <div class="input-field col s6">
+                                <input type="number" value="" name='imgW' id="imgW" />
+                                <label for="imgW">Image Width (in px)</label>
+                            </div>
+
+                            <div class="input-field col s6">
+                                <label for="imgH">Image Height (in px)</label>
+                                <input type="number" value="" id="imgH" />
+                            </div>
+
+
+                            <div class="input-field col s6">
+                                <label for="imgFileName">File Name</label>
+                                <input type="text" id="imgFileName" />
+                            </div>
+
+                            <div class="input-field col s3">
+                                <select id="sel">
+                                    <option value="png">png</option>
+                                    <option value="jpeg">jpeg</option>
+                                </select>
+
+                            </div>
+                            <div class="input-field col s3">
+                                <button type="submit" class="btn waves-effect waves-light  cyan darken-4"
+                                    id="save-img">Save Image</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        </div>
+        <div class="container">
+            <h5 class="toCanvas"> <a href="javascript:void(0);"> Preview of the Image </a></h5>
+            <div id='preview' class="col s12">
+                Preview will be shown here...
+            </div>
+        </div>
+
+
+    </main>
+
+
+
+
+    <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="js/html2canvas.min.js"></script>
+    <script type="text/javascript" src="js/canvas2image.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var test = $(".ck-content").get(0);
+            // var test = $(".test").get(0);
+            $('#save-img').click(function (e) {
+                e.preventDefault();
+                console.log('clicked..')
+                html2canvas(test).then(function (canvas) {
+                    var canvasWidth = canvas.width;
+                    var canvasHeight = canvas.height;
+                    $('.toCanvas').after(canvas);
+                    $('.toPic').show(1000);
+                    var img = Canvas2Image.convertToImage(canvas, canvasWidth, canvasHeight);
+                    $(".toPic").html(img);
+                    $("#preview").html('');
+
+                    // console.log('clicked')
+                    let type = $('#sel').val(); //图片类型
+                    let w = $('#imgW').val(); //图片宽度
+                    let h = $('#imgH').val(); //图片高度
+                    let f = $('#imgFileName').val(); //图片文件名
+                    w = (w === '') ? canvasWidth : w; //判断输入宽高是否为空，为空时保持原来的值
+                    h = (h === '') ? canvasHeight : h;
+                    // 调用Canvas2Image插件
+                    Canvas2Image.saveAsImage(canvas, w, h, type, f);
+                });
+            });
+        })
+    </script>
+    <!-- CK Editor Stuff -->
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+    <!-- Materialize initilizations -->
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+    </script>
+
+
+    <!-- Preview the Text -->
+
+</body>
+
+</html>
